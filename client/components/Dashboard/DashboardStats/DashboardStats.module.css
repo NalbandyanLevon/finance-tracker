@@ -1,0 +1,65 @@
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.iconBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.greenCard {
+  background: linear-gradient(to bottom right, #ecfdf5, #d1fae5);
+  border-color: #a7f3d0;
+}
+
+.greenIcon {
+  background: #10b981;
+}
+
+.greenText {
+  color: #047857;
+}
+
+.redCard {
+  background: linear-gradient(to bottom right, #fef2f2, #ffe4e6);
+  border-color: #fecaca;
+}
+
+.redIcon {
+  background: #ef4444;
+}
+
+.redText {
+  color: #dc2626;
+}
+
+.purpleCard {
+  background: linear-gradient(to bottom right, #eef2ff, #ede9fe);
+  border-color: #c7d2fe;
+}
+
+.purpleIcon {
+  background: #6366f1;
+}
+
+.purpleText {
+  color: #4f46e5;
+}
