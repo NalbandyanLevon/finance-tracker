@@ -24,6 +24,37 @@
   margin-top: 4px;
 }
 
+.rightPanel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(to right, #6366f1, #7c3aed);
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.addBtn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(to right, #4f46e5, #6d28d9);
+}
+
+.plus {
+  font-size: 18px;
+  line-height: 1;
+}
+
 .count {
   font-size: 14px;
   color: #6b7280;

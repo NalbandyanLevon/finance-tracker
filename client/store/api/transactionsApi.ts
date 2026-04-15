@@ -3,6 +3,7 @@ import { baseQueryWithReauth } from "./baseQuery";
 import {
   CreateTransactionDTO,
   IResponseTransaction,
+  UpdateTransactionDTO,
 } from "@/types/transactionTypes";
 
 export const transactionsApi = createApi({
@@ -29,6 +30,17 @@ export const transactionsApi = createApi({
       query: (body) => ({ url: "/transactions", method: "POST", body }),
       invalidatesTags: ["Transactions"],
     }),
+    updateTransaction: builder.mutation<
+      IResponseTransaction,
+      UpdateTransactionDTO
+    >({
+      query: ({ id, amount, category_id, type }) => ({
+        url: `/transactions/${id}`,
+        method: "PUT",
+        body: { amount, category_id, type },
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
     deleteTransaction: builder.mutation<void, string>({
       query: (id) => ({ url: `/transactions/${id}`, method: "DELETE" }),
       invalidatesTags: ["Transactions"],
@@ -39,5 +51,6 @@ export const transactionsApi = createApi({
 export const {
   useGetTransactionsQuery,
   useCreateTransactionMutation,
+  useUpdateTransactionMutation,
   useDeleteTransactionMutation,
 } = transactionsApi;

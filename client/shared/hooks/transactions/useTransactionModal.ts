@@ -1,21 +1,34 @@
-"use client";
+import { FormEvent, useState } from "react";
 
-import { useState } from "react";
-import { useCreateTransactionMutation } from "@/store/api/transactionsApi";
 import {
-  useGetAllCategoriesQuery,
   useCreateCategoryMutation,
+  useGetAllCategoriesQuery,
 } from "@/store/api/categoriesApi";
 
-export const useTransactionModal = (onClose: () => void) => {
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState<"income" | "expense">("expense");
-  const [categoryId, setCategoryId] = useState("");
+import {
+  useCreateTransactionMutation,
+  useUpdateTransactionMutation,
+} from "@/store/api/transactionsApi";
+
+import { ITransaction } from "@/types/transactionTypes";
+
+export const useTransactionModal = (
+  onClose: () => void,
+  mode: "create" | "update",
+  transaction?: ITransaction,
+) => {
+  const [amount, setAmount] = useState(
+    mode === "create" ? "" : transaction?.amount,
+  );
+  const [type, setType] = useState<"income" | "expense">(
+    mode === "create" ? "expense" : transaction!.type,
+  );
+  const [categoryId, setCategoryId] = useState(transaction?.category);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const { data: categories, refetch } = useGetAllCategoriesQuery();
-
+  const { data: categories = [] } = useGetAllCategoriesQuery();
   const [createTransaction] = useCreateTransactionMutation();
+  const [updateTransaction] = useUpdateTransactionMutation();
   const [createCategory] = useCreateCategoryMutation();
 
   const handleAddCategory = async () => {
@@ -23,18 +36,28 @@ export const useTransactionModal = (onClose: () => void) => {
 
     await createCategory({ name: newCategoryName }).unwrap();
     setNewCategoryName("");
-    refetch();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     if (!amount || !categoryId) return;
 
-    await createTransaction({
-      amount: Number(amount),
-      type,
-      category_id: categoryId,
-    }).unwrap();
+    if (mode === "create" && type) {
+      await createTransaction({
+        amount: Number(amount),
+        type,
+        category_id: categoryId,
+      }).unwrap();
+    } else if (mode === "update" && transaction && type) {
+      await updateTransaction({
+        id: transaction.id,
+        amount: Number(amount),
+        category_id: categoryId,
+        type,
+      }).unwrap();
+      console.log("ashxtav es zibily");
+    }
 
     onClose();
   };
@@ -44,14 +67,11 @@ export const useTransactionModal = (onClose: () => void) => {
     type,
     categoryId,
     newCategoryName,
-
     setAmount,
     setType,
     setCategoryId,
     setNewCategoryName,
-
-    categories: categories || [],
-
+    categories,
     handleAddCategory,
     handleSubmit,
   };

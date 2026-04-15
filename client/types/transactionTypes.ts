@@ -7,7 +7,15 @@ export interface IResponseTransaction {
   created_at: Date;
 }
 
-export type CreateTransactionDTO = Omit<IResponseTransaction, "id" | "created_at" | "user_id">;
+export type CreateTransactionDTO = Omit<
+  IResponseTransaction,
+  "id" | "created_at" | "user_id"
+>;
+
+export type UpdateTransactionDTO = Omit<
+  IResponseTransaction,
+  "created_at" | "user_id"
+>;
 
 export interface ITransaction {
   id: string;
@@ -17,4 +25,3 @@ export interface ITransaction {
   category: string;
   date: Date;
 }
-

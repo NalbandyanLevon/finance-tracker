@@ -5,9 +5,10 @@ import {
   deleteCategory,
   getAllCategories,
   getCategoryById,
+  updateCategory,
 } from "../controller/categoriesController.js";
 import { validateMiddleware } from "../middlewares/validateMiddleware.js";
-import { createCategorySchema } from "../validators/categoryValidator.js";
+import { createUpdateCategorySchema } from "../validators/categoryValidator.js";
 
 const router = Router();
 
@@ -16,8 +17,14 @@ router.get("/:id", authMiddleware, getCategoryById);
 router.post(
   "/",
   authMiddleware,
-  validateMiddleware(createCategorySchema),
+  validateMiddleware(createUpdateCategorySchema),
   createCategory,
+);
+router.put(
+  "/:id",
+  authMiddleware,
+  validateMiddleware(createUpdateCategorySchema),
+  updateCategory,
 );
 router.delete("/:id", authMiddleware, deleteCategory);
 

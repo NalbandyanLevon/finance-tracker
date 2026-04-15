@@ -5,3 +5,4 @@ export interface ICategory {
 }
 
 export type CreateCategoryDTO = Pick<ICategory, "name">;
+export type UpdateCategoryDTO = Omit<ICategory, "userId">;

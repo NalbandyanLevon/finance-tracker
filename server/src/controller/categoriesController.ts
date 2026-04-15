@@ -1,7 +1,6 @@
 import type { Response } from "express";
 import { AuthRequest } from "../types.js";
 import * as categoriesService from "../services/categoriesService.js";
-import { createCategorySchema } from "../validators/categoryValidator.js";
 
 export const getAllCategories = async (req: AuthRequest, res: Response) => {
   try {
@@ -56,12 +55,46 @@ export const createCategory = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: "Invalid name" });
     }
 
+    const allCategories = await categoriesService.getAllCategories(userId);
+    if (
+      allCategories?.some((cat) => {
+        cat.name === name;
+      })
+    ) {
+      return res.status(400).json({ message: "Existing name" });
+    }
+
     const createdCategory = await categoriesService.createCategory({
       name,
       user_id: userId,
     });
 
     return res.status(201).json(createdCategory);
+  } catch (error) {
+    return res.status(500).json({
+      message: error instanceof Error ? error.message : "Server error",
+    });
+  }
+};
+
+export const updateCategory = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ mesage: "Unauthorized" });
+    }
+
+    const { name } = req.body;
+    const { id } = req.params;
+
+    const updatedCategory = await categoriesService.updateCategory({
+      name,
+      id,
+      user_id: userId,
+    });
+
+    return res.status(200).json(updatedCategory);
   } catch (error) {
     return res.status(500).json({
       message: error instanceof Error ? error.message : "Server error",

@@ -43,6 +43,18 @@ export const postCategory = async ({
   return newCategory.rows[0] || null;
 };
 
+export const updateCategory = async ({
+  name,
+  user_id,
+  id,
+}: ICategory): Promise<ICategory | null> => {
+  const updatedCategory = await pool.query<ICategory>(
+    "UPDATE categories SET name = $1 WHERE user_id = $2  AND id = $3 RETURNING *",
+    [name, user_id, id],
+  );
+  return updatedCategory.rows[0] || null;
+};
+
 export const deleteCategory = async (
   id: string,
   userId: string,

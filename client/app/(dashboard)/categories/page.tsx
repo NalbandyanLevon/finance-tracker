@@ -8,6 +8,7 @@ import { useState } from "react";
 import Loader from "@/shared/ui/Loader/Loader";
 import CategoryCard from "@/components/Categories/CategoryCard/CategoryCard";
 import CategoryModal from "@/components/Categories/CategoryModal";
+import { ICategory } from "@/types/categoryTypes";
 
 import styles from "./CategoriesPage.module.css";
 
@@ -15,7 +16,11 @@ const CategoriesPage = () => {
   const { data: categories = [], isLoading } = useGetAllCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
 
-  const [open, setOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
+    null,
+  );
 
   const handleDelete = async (id: string) => {
     try {
@@ -25,9 +30,9 @@ const CategoriesPage = () => {
     }
   };
 
-  //TODO add edit logic
-  const handleEdit = (id: string) => {
-    console.log("edit:", id);
+  const handleEdit = (category: ICategory) => {
+    setUpdateModalOpen(true);
+    setSelectedCategory(category);
   };
 
   if (isLoading) return <Loader />;
@@ -43,12 +48,28 @@ const CategoriesPage = () => {
         <div className={styles.rightPanel}>
           <div className={styles.count}>{categories.length} categories</div>
 
-          <button onClick={() => setOpen(true)} className={styles.button}>
+          <button
+            onClick={() => setCreateModalOpen(true)}
+            className={styles.button}
+          >
             + Add Category
           </button>
         </div>
       </div>
-      {open && <CategoryModal onClose={() => setOpen(false)} />}
+      {createModalOpen && (
+        <CategoryModal
+          mode="create"
+          onClose={() => setCreateModalOpen(false)}
+        />
+      )}
+      {updateModalOpen && (
+        <CategoryModal
+          mode="update"
+          categoryId={selectedCategory?.id}
+          initialValue={selectedCategory?.name}
+          onClose={() => setUpdateModalOpen(false)}
+        />
+      )}
       <div className={styles.list}>
         {categories.length > 0 ? (
           categories.map((cat) => (
@@ -57,7 +78,7 @@ const CategoriesPage = () => {
               id={cat.id}
               name={cat.name}
               onDelete={handleDelete}
-              onEdit={handleEdit}
+              onEdit={() => handleEdit(cat)}
             />
           ))
         ) : (

@@ -5,6 +5,7 @@ import {
   getCategoryById,
   ICategory,
   postCategory,
+  updateCategory as update,
 } from "../models/categoriesModel.js";
 
 export const getAllCategories = async (
@@ -36,6 +37,16 @@ export const createCategory = async (
     return null;
   }
   return newCategory;
+};
+
+export const updateCategory = async (
+  dto: ICategory,
+): Promise<ICategory | null> => {
+  const updatedCategory = await update(dto);
+  if (!updatedCategory) {
+    return null;
+  }
+  return updatedCategory;
 };
 
 export const removeCategory = async (

@@ -73,20 +73,37 @@
   color: #dc2626;
 }
 
-.deleteBtn {
+.actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px;
-  border-radius: 8px;
+  gap: 8px;
+}
+
+.btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   border: none;
-  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: #9ca3af;
   transition: 0.2s;
 }
 
-.deleteBtn:hover {
-  color: #dc2626;
-  background: #fef2f2;
+.edit {
+  background: #eef2ff;
+  color: #6366f1;
+}
+
+.edit:hover {
+  background: #e0e7ff;
+}
+
+.delete {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.delete:hover {
+  background: #fecaca;
 }

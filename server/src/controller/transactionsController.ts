@@ -75,6 +75,31 @@ export const createTransaction = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const updateTransaction = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { amount, type, categoryId } = req.body;
+    const { id } = req.params;
+
+    const updatedTransaction = await transactionService.putTransaction({
+      amount,
+      id,
+      type,
+      category_id: categoryId,
+    });
+
+    return res.status(200).json({ updateTransaction });
+  } catch (error) {
+    return res.status(500).json({
+      message: error instanceof Error ? error.message : "Server error",
+    });
+  }
+};
+
 export const deleteTransaction = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;

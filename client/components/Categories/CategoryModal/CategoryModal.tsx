@@ -1,31 +1,66 @@
-import { FC, FormEvent, useState } from "react";
-import { useCreateCategoryMutation } from "@/store/api/categoriesApi";
+"use client";
+
+import { FC, FormEvent, useEffect, useState } from "react";
+import {
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+} from "@/store/api/categoriesApi";
 import { ChartBarStacked } from "lucide-react";
 
 import Input from "@/shared/ui/Input";
-
 import styles from "./CategoryModal.module.css";
 
 interface IProps {
+  mode: "create" | "update";
   onClose: () => void;
+  initialValue?: string;
+  categoryId?: string;
 }
 
-const CategoryModal: FC<IProps> = ({ onClose }) => {
-  const [name, setName] = useState("");
-  const [createCategory] = useCreateCategoryMutation();
+const CategoryModal: FC<IProps> = ({
+  mode,
+  onClose,
+  initialValue = "",
+  categoryId,
+}) => {
+  const [name, setName] = useState(initialValue);
+
+  const [createCategory, { isLoading: isCreating }] =
+    useCreateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
+
+  const isLoading = isCreating || isUpdating;
+
+  useEffect(() => {
+    setName(initialValue);
+  }, [initialValue]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!name) return;
+    if (!name.trim()) return;
 
     try {
-      await createCategory({ name }).unwrap();
+      if (mode === "create") {
+        await createCategory({ name }).unwrap();
+      } else {
+        if (!categoryId) return;
+        await updateCategory({ id: categoryId, name }).unwrap();
+      }
+
       setName("");
       onClose();
     } catch (err) {
       console.error(err);
     }
   };
+
+  const title = mode === "create" ? "Add Category" : "Update Category";
+
+  const subtitle =
+    mode === "create" ? "Create a new spending category" : "Edit your category";
+
+  const buttonText = mode === "create" ? "Create Category" : "Save Changes";
 
   return (
     <div className={styles.overlay}>
@@ -35,8 +70,8 @@ const CategoryModal: FC<IProps> = ({ onClose }) => {
             <ChartBarStacked />
           </div>
 
-          <h2 className={styles.title}>Add Category</h2>
-          <p className={styles.subtitle}>Create a new spending category</p>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.subtitle}>{subtitle}</p>
         </div>
 
         <Input
@@ -54,8 +89,12 @@ const CategoryModal: FC<IProps> = ({ onClose }) => {
             Cancel
           </button>
 
-          <button type="submit" className={`${styles.btn} ${styles.submit}`}>
-            Create Category
+          <button
+            type="submit"
+            className={`${styles.btn} ${styles.submit}`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Saving..." : buttonText}
           </button>
         </div>
       </form>

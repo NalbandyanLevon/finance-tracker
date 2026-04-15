@@ -1,13 +1,21 @@
 "use client";
 
 import { useMemo } from "react";
-import { useGetTransactionsQuery } from "@/store/api/transactionsApi";
+
+import {
+  useDeleteTransactionMutation,
+  useGetTransactionsQuery,
+  useUpdateTransactionMutation,
+} from "@/store/api/transactionsApi";
 import { useGetAllCategoriesQuery } from "@/store/api/categoriesApi";
+
 import { adaptTransaction } from "@/utils/transactionAdapter";
 
 export const useTransactions = () => {
   const { data: transactionsRaw, isLoading } = useGetTransactionsQuery({});
   const { data: categories } = useGetAllCategoriesQuery();
+  const [deleteTransaction] = useDeleteTransactionMutation();
+  const [updateTransaction] = useUpdateTransactionMutation();
 
   const transactions = useMemo(() => {
     if (!transactionsRaw) return [];
@@ -19,5 +27,7 @@ export const useTransactions = () => {
     transactions,
     isLoading,
     categories: categories || [],
+    updateTransaction,
+    deleteTransaction,
   };
 };

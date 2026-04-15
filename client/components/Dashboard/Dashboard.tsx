@@ -33,11 +33,17 @@ const Dashboard = () => {
       />
 
       {openCategoryModal && (
-        <CategoryModal onClose={() => setOpenCategoryModal(false)} />
+        <CategoryModal
+          mode="create"
+          onClose={() => setOpenCategoryModal(false)}
+        />
       )}
 
       {openTransactionModal && (
-        <TransactionModal onClose={() => setOpenTransactionModal(false)} />
+        <TransactionModal
+          mode="create"
+          onClose={() => setOpenTransactionModal(false)}
+        />
       )}
     </div>
   );

@@ -3,7 +3,6 @@ import { authApi } from "./api/authApi";
 import { transactionsApi } from "./api/transactionsApi";
 import { categoriesApi } from "./api/categoriesApi";
 import { authReducer } from "./slices/authSlice";
-import { transactionReducer } from "./slices/transactionsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +10,6 @@ export const store = configureStore({
     [transactionsApi.reducerPath]: transactionsApi.reducer,
     [categoriesApi.reducerPath]: categoriesApi.reducer,
     auth: authReducer,
-    transactions: transactionReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(

@@ -1,5 +1,5 @@
 import z from "zod";
 
-export const createCategorySchema = z.object({
+export const createUpdateCategorySchema = z.object({
   name: z.string().min(3),
 });

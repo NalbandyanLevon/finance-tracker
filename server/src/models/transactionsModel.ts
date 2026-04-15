@@ -10,6 +10,7 @@ export interface ITransaction {
 }
 
 export type CreateTranactionDTO = Omit<ITransaction, "id" | "created_at">;
+export type UpdateTransactionDTO = Omit<ITransaction, "user_id" | "created_at">;
 
 export const findTransactions = async (
   userId: string,
@@ -49,6 +50,20 @@ export const postTransaction = async (
   );
 
   return newTransaction.rows[0] || null;
+};
+
+export const putTransaction = async (
+  dto: UpdateTransactionDTO,
+): Promise<ITransaction | null> => {
+  const updatedTransaction = await pool.query<ITransaction>(
+    `UPDATE transactions
+    SET amount = $1, type = $2, category_id = $3
+    WHERE id = $4
+    RETURNING *`,
+    [dto.amount, dto.type, dto.category_id, dto.id],
+  );
+
+  return updatedTransaction.rows[0] || null;
 };
 
 export const deleteTransaction = async (

@@ -11,7 +11,7 @@ export const adaptTransaction = (
   return {
     id: transaction.id,
     title: category,
-    amount: parseFloat(transaction.amount),
+    amount: parseFloat(String(transaction.amount)),
     type: transaction.type,
     category,
     date: transaction.created_at,

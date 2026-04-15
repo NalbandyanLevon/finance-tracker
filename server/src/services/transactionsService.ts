@@ -5,6 +5,7 @@ import {
   findTransactions,
   ITransaction,
   postTransaction,
+  UpdateTransactionDTO,
 } from "../models/transactionsModel.js";
 
 export const getTransactions = async (
@@ -36,6 +37,16 @@ export const createTransaction = async (
     return null;
   }
   return newTransaction;
+};
+
+export const putTransaction = async (
+  dto: UpdateTransactionDTO,
+): Promise<ITransaction | null> => {
+  const updatedTransaction = await putTransaction(dto);
+  if (!updatedTransaction) {
+    return null;
+  }
+  return updatedTransaction;
 };
 
 export const removeTransaction = async (

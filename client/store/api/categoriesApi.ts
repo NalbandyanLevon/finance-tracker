@@ -1,6 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./baseQuery";
-import { CreateCategoryDTO, ICategory } from "@/types/categoryTypes";
+import {
+  CreateCategoryDTO,
+  ICategory,
+  UpdateCategoryDTO,
+} from "@/types/categoryTypes";
 
 export const categoriesApi = createApi({
   reducerPath: "categoriesApi",
@@ -17,11 +21,18 @@ export const categoriesApi = createApi({
     }),
     createCategory: builder.mutation<ICategory, CreateCategoryDTO>({
       query: (body) => ({ url: "/categories", method: "POST", body }),
-      
+      invalidatesTags: ["Categories"],
+    }),
+    updateCategory: builder.mutation<ICategory, UpdateCategoryDTO>({
+      query: ({ id, name }) => ({
+        url: `/categories/${id}`,
+        method: "PUT",
+        body: { name },
+      }),
       invalidatesTags: ["Categories"],
     }),
     deleteCategory: builder.mutation<void, string>({
-      query: (id) => ({ url: `/categories${id}`, method: "DELETE" }),
+      query: (id) => ({ url: `/categories/${id}`, method: "DELETE" }),
       invalidatesTags: ["Categories"],
     }),
   }),
@@ -31,5 +42,6 @@ export const {
   useGetAllCategoriesQuery,
   useGetCategoryByIdQuery,
   useCreateCategoryMutation,
+  useUpdateCategoryMutation,
   useDeleteCategoryMutation,
 } = categoriesApi;

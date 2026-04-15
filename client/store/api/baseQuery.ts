@@ -1,5 +1,5 @@
 import { BaseQueryFn, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IUser, logout, setCredentials } from "../slices/authSlice";
+import { logout, setCredentials } from "../slices/authSlice";
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_URL,

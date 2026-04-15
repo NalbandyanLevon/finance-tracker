@@ -3,18 +3,18 @@
 import { FC } from "react";
 import { CircleDollarSign } from "lucide-react";
 
-import Select from "@/shared/ui/Select";
-import Input from "@/shared/ui/Input/Input";
-
+import { ITransaction } from "@/types/transactionTypes";
 import { useTransactionModal } from "@/shared/hooks/transactions/useTransactionModal";
 
 import styles from "./TransactionModal.module.css";
 
 interface IProps {
+  mode: "create" | "update";
   onClose: () => void;
+  transaction?: ITransaction;
 }
 
-const TransactionModal: FC<IProps> = ({ onClose }) => {
+const TransactionModal: FC<IProps> = ({ mode, onClose, transaction }) => {
   const {
     amount,
     type,
@@ -27,7 +27,7 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
     categories,
     handleAddCategory,
     handleSubmit,
-  } = useTransactionModal(onClose);
+  } = useTransactionModal(onClose, mode, transaction);
 
   return (
     <div className={styles.overlay}>
@@ -37,8 +37,15 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
             <CircleDollarSign color="white" />
           </div>
 
-          <h2 className={styles.title}>Add Transaction</h2>
-          <p className={styles.subtitle}>Record a new financial transaction</p>
+          <h2 className={styles.title}>
+            {mode === "create" ? "Add Transaction" : "Update Transaction"}
+          </h2>
+
+          <p className={styles.subtitle}>
+            {mode === "create"
+              ? "Record a new transaction"
+              : "Edit your transaction"}
+          </p>
         </div>
 
         <div className={styles.field}>
@@ -46,7 +53,6 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
           <input
             className={styles.input}
             type="number"
-            placeholder="0.00"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -66,6 +72,7 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
 
         <div className={styles.field}>
           <label className={styles.label}>Category</label>
+
           <select
             className={styles.select}
             value={categoryId}
@@ -79,22 +86,24 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
             ))}
           </select>
 
-          <div className={styles.inline}>
-            <input
-              className={`${styles.input} ${styles.flex1}`}
-              placeholder="New category"
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-            />
+          {mode === "create" && (
+            <div className={styles.inline}>
+              <input
+                className={`${styles.input} ${styles.flex1}`}
+                placeholder="New category"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+              />
 
-            <button
-              type="button"
-              className={styles.addBtn}
-              onClick={handleAddCategory}
-            >
-              Add
-            </button>
-          </div>
+              <button
+                type="button"
+                className={styles.addBtn}
+                onClick={handleAddCategory}
+              >
+                Add
+              </button>
+            </div>
+          )}
         </div>
 
         <div className={styles.actions}>
@@ -107,7 +116,7 @@ const TransactionModal: FC<IProps> = ({ onClose }) => {
           </button>
 
           <button type="submit" className={`${styles.btn} ${styles.submit}`}>
-            Save Transaction
+            {mode === "create" ? "Create" : "Update"}
           </button>
         </div>
       </form>
