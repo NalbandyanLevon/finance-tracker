@@ -1,0 +1,83 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid #f1f5f9;
+}
+
+.header {
+  text-align: center;
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  border-radius: 14px;
+  background: linear-gradient(to bottom right, #f87171, #dc2626);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.description {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s;
+}
+
+.cancel {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.cancel:hover {
+  background: #f9fafb;
+}
+
+.confirm {
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  color: white;
+}
+
+.confirm:hover {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+}
