@@ -82,17 +82,17 @@ export const updateTransaction = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { amount, type, categoryId } = req.body;
+    const { amount, type, category_id } = req.body;
     const { id } = req.params;
 
     const updatedTransaction = await transactionService.putTransaction({
       amount,
       id,
       type,
-      category_id: categoryId,
+      category_id,
     });
 
-    return res.status(200).json({ updateTransaction });
+    return res.status(200).json(updatedTransaction);
   } catch (error) {
     return res.status(500).json({
       message: error instanceof Error ? error.message : "Server error",

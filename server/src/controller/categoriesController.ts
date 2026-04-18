@@ -56,11 +56,7 @@ export const createCategory = async (req: AuthRequest, res: Response) => {
     }
 
     const allCategories = await categoriesService.getAllCategories(userId);
-    if (
-      allCategories?.some((cat) => {
-        cat.name === name;
-      })
-    ) {
+    if (allCategories?.some((cat) => cat.name === name)) {
       return res.status(400).json({ message: "Existing name" });
     }
 

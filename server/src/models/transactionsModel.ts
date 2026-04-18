@@ -52,7 +52,7 @@ export const postTransaction = async (
   return newTransaction.rows[0] || null;
 };
 
-export const putTransaction = async (
+export const updateTransaction = async (
   dto: UpdateTransactionDTO,
 ): Promise<ITransaction | null> => {
   const updatedTransaction = await pool.query<ITransaction>(
