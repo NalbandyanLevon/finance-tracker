@@ -1,13 +1,16 @@
 "use client";
 
-import {
-  useDeleteCategoryMutation,
-  useGetAllCategoriesQuery,
-} from "@/store/api/categoriesApi";
 import { useState } from "react";
+
 import Loader from "@/shared/ui/Loader/Loader";
-import CategoryCard from "@/components/Categories/CategoryCard/CategoryCard";
+import CategoryCard from "@/components/Categories/CategoryCard";
 import CategoryModal from "@/components/Categories/CategoryModal";
+import ConfirmModal from "@/shared/ui/ConfirmModal";
+
+import {
+  useGetAllCategoriesQuery,
+  useDeleteCategoryMutation,
+} from "@/store/api/categoriesApi";
 import { ICategory } from "@/types/categoryTypes";
 
 import styles from "./CategoriesPage.module.css";
@@ -16,23 +19,23 @@ const CategoriesPage = () => {
   const { data: categories = [], isLoading } = useGetAllCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
 
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null,
-  );
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteCategory(id).unwrap();
-    } catch (err) {
-      console.error(err);
-    }
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id);
+    setConfirmOpen(true);
   };
 
-  const handleEdit = (category: ICategory) => {
-    setUpdateModalOpen(true);
-    setSelectedCategory(category);
+  const handleConfirmDelete = async () => {
+    if (!selectedId) return;
+
+    await deleteCategory(selectedId).unwrap();
+
+    setConfirmOpen(false);
+    setSelectedId(null);
   };
 
   if (isLoading) return <Loader />;
@@ -40,52 +43,36 @@ const CategoriesPage = () => {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.titleBlock}>
-          <h1>Categories</h1>
-          <p>Manage your spending categories</p>
-        </div>
+        <h1>Categories</h1>
 
-        <div className={styles.rightPanel}>
-          <div className={styles.count}>{categories.length} categories</div>
-
-          <button
-            onClick={() => setCreateModalOpen(true)}
-            className={styles.button}
-          >
-            + Add Category
-          </button>
-        </div>
+        <button onClick={() => setCreateOpen(true)} className={styles.button}>
+          + Add Category
+        </button>
       </div>
-      {createModalOpen && (
-        <CategoryModal
-          mode="create"
-          onClose={() => setCreateModalOpen(false)}
+
+      {createOpen && (
+        <CategoryModal mode="create" onClose={() => setCreateOpen(false)} />
+      )}
+
+      {confirmOpen && (
+        <ConfirmModal
+          title="Delete category?"
+          description="All related transactions will also be deleted."
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={handleConfirmDelete}
         />
       )}
-      {updateModalOpen && (
-        <CategoryModal
-          mode="update"
-          categoryId={selectedCategory?.id}
-          initialValue={selectedCategory?.name}
-          onClose={() => setUpdateModalOpen(false)}
-        />
-      )}
+
       <div className={styles.list}>
-        {categories.length > 0 ? (
-          categories.map((cat) => (
-            <CategoryCard
-              key={cat.id}
-              id={cat.id}
-              name={cat.name}
-              onDelete={handleDelete}
-              onEdit={() => handleEdit(cat)}
-            />
-          ))
-        ) : (
-          <div className={styles.empty}>
-            <p>No categories found</p>
-          </div>
-        )}
+        {categories.map((cat: ICategory) => (
+          <CategoryCard
+            key={cat.id}
+            id={cat.id}
+            name={cat.name}
+            onEdit={() => {}}
+            onDelete={handleDeleteClick}
+          />
+        ))}
       </div>
     </div>
   );

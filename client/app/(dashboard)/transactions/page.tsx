@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 
-import TransactionCard from "@/components/Transactions/TransactionsCard/TransactionsCard";
+import Loader from "@/shared/ui/Loader/Loader";
+import TransactionCard from "@/components/Transactions/TransactionsCard";
 import TransactionsFilters from "@/components/Transactions/TransactionFilters";
 import TransactionModal from "@/components/Transactions/TransactionsModal";
+import ConfirmModal from "@/shared/ui/ConfirmModal";
 
-import Loader from "@/shared/ui/Loader/Loader";
 import { useTransactions } from "@/shared/hooks/transactions/useTransactions";
 import { useTransactionFilters } from "@/shared/hooks/transactions/useTransactionsFilters";
-
 import { ITransaction } from "@/types/transactionTypes";
 
 import styles from "./TransactionsPage.module.css";
@@ -21,21 +21,23 @@ const TransactionsPage = () => {
   const { filtered, category, type, setCategory, setType } =
     useTransactionFilters(transactions);
 
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedTx, setSelectedTx] = useState<ITransaction | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteTransaction(id).unwrap();
-    } catch (err) {
-      console.error(err);
-    }
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedTxId, setSelectedTxId] = useState<string | null>(null);
+
+  const handleDeleteClick = (id: string) => {
+    setSelectedTxId(id);
+    setConfirmOpen(true);
   };
 
-  const handleEdit = (tx: ITransaction) => {
-    setSelectedTx(tx);
-    setUpdateModalOpen(true);
+  const handleConfirmDelete = async () => {
+    if (!selectedTxId) return;
+
+    await deleteTransaction(selectedTxId).unwrap();
+
+    setConfirmOpen(false);
+    setSelectedTxId(null);
   };
 
   if (isLoading) return <Loader />;
@@ -43,22 +45,11 @@ const TransactionsPage = () => {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div>
-          <h1>Transactions</h1>
-          <p>Manage and track your financial activity</p>
-        </div>
+        <h1>Transactions</h1>
 
-        <div className={styles.rightPanel}>
-          <div className={styles.count}>{filtered.length} transactions</div>
-
-          <button
-            onClick={() => setCreateModalOpen(true)}
-            className={styles.addBtn}
-          >
-            <span className={styles.plus}>+</span>
-            Add Transaction
-          </button>
-        </div>
+        <button onClick={() => setCreateOpen(true)} className={styles.button}>
+          + Add Transaction
+        </button>
       </div>
 
       <TransactionsFilters
@@ -69,38 +60,29 @@ const TransactionsPage = () => {
         setType={setType}
       />
 
-      {createModalOpen && (
-        <TransactionModal
-          mode="create"
-          onClose={() => setCreateModalOpen(false)}
-        />
+      {createOpen && (
+        <TransactionModal mode="create" onClose={() => setCreateOpen(false)} />
       )}
 
-      {updateModalOpen && selectedTx && (
-        <TransactionModal
-          mode="update"
-          transaction={selectedTx}
-          onClose={() => setUpdateModalOpen(false)}
+      {confirmOpen && (
+        <ConfirmModal
+          title="Delete transaction?"
+          description="This action cannot be undone."
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={handleConfirmDelete}
         />
       )}
 
       <div className={styles.list}>
-        {filtered.length > 0 ? (
-          filtered.map((tx) => (
-            <TransactionCard
-              key={tx.id}
-              transaction={tx}
-              id={tx.id}
-              onDelete={handleDelete}
-              onEdit={() => handleEdit(tx)}
-            />
-          ))
-        ) : (
-          <div className={styles.empty}>
-            <p>No transactions found</p>
-            <p>Try adjusting your filters</p>
-          </div>
-        )}
+        {filtered.map((tx: ITransaction) => (
+          <TransactionCard
+            key={tx.id}
+            transaction={tx}
+            id={tx.id}
+            onDelete={handleDeleteClick}
+            onEdit={() => {}}
+          />
+        ))}
       </div>
     </div>
   );
