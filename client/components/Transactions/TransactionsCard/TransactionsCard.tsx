@@ -27,8 +27,7 @@ const TransactionCard: FC<IProps> = ({ transaction, id, onDelete, onEdit }) => {
         </div>
 
         <div>
-          <h3 className={styles.title}>{transaction.title}</h3>
-          <p className={styles.category}>{transaction.category}</p>
+          <h3 className={styles.title}>{transaction.categoryName}</h3>
           <p className={styles.date}>
             {new Date(transaction.date).toLocaleDateString("en-US", {
               month: "short",

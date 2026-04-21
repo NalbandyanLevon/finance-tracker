@@ -23,6 +23,9 @@ const TransactionsPage = () => {
 
   const [createOpen, setCreateOpen] = useState(false);
 
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [selectedTx, setSelectedTx] = useState<ITransaction | null>(null);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedTxId, setSelectedTxId] = useState<string | null>(null);
 
@@ -40,6 +43,11 @@ const TransactionsPage = () => {
     setSelectedTxId(null);
   };
 
+  const handleEdit = (tx: ITransaction) => {
+    setSelectedTx(tx);
+    setUpdateOpen(true);
+  };
+
   if (isLoading) return <Loader />;
 
   return (
@@ -47,9 +55,14 @@ const TransactionsPage = () => {
       <div className={styles.header}>
         <h1>Transactions</h1>
 
-        <button onClick={() => setCreateOpen(true)} className={styles.button}>
-          + Add Transaction
-        </button>
+        <div className={styles.rightPanel}>
+          <div className={styles.count}>{filtered.length} transactions</div>
+
+          <button onClick={() => setCreateOpen(true)} className={styles.addBtn}>
+            <span className={styles.plus}>+</span>
+            Add Transaction
+          </button>
+        </div>
       </div>
 
       <TransactionsFilters
@@ -62,6 +75,14 @@ const TransactionsPage = () => {
 
       {createOpen && (
         <TransactionModal mode="create" onClose={() => setCreateOpen(false)} />
+      )}
+
+      {updateOpen && selectedTx && (
+        <TransactionModal
+          mode="update"
+          transaction={selectedTx}
+          onClose={() => setUpdateOpen(false)}
+        />
       )}
 
       {confirmOpen && (
@@ -80,7 +101,7 @@ const TransactionsPage = () => {
             transaction={tx}
             id={tx.id}
             onDelete={handleDeleteClick}
-            onEdit={() => {}}
+            onEdit={() => handleEdit(tx)}
           />
         ))}
       </div>

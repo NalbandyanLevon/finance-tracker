@@ -1,13 +1,13 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Home, CreditCard, Layers, LogOut } from "lucide-react";
 
 import { useDispatch } from "react-redux";
 
 import { logout } from "@/store/slices/authSlice";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import SidebarItem from "./SidebarItem";
 
@@ -21,6 +21,11 @@ interface IProps {
 const Sidebar: FC<IProps> = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, setOpen]);
 
   const handleOnLogout = () => {
     dispatch(logout());

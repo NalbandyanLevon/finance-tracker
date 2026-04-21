@@ -19,9 +19,9 @@ export type UpdateTransactionDTO = Omit<
 
 export interface ITransaction {
   id: string;
-  title: string;
   amount: number;
   type: "income" | "expense";
-  category: string;
+  categoryName: string;
+  categoryId: string;
   date: Date;
 }

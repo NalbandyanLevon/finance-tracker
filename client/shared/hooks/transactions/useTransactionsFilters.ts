@@ -9,7 +9,7 @@ export const useTransactionFilters = (transactions: ITransaction[]) => {
 
   const filtered = useMemo(() => {
     return transactions.filter((tx) => {
-      const categoryMatch = !category || tx.category === category;
+      const categoryMatch = !category || tx.categoryName === category;
       const typeMatch = !type || tx.type === type;
 
       return categoryMatch && typeMatch;

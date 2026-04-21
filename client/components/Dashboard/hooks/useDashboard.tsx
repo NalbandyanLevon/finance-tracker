@@ -40,7 +40,8 @@ export const useDashboardData = () => {
       }
       incomeExpenseMap[day][tx.type] += tx.amount;
 
-      categoryMap[tx.category] = (categoryMap[tx.category] || 0) + tx.amount;
+      categoryMap[tx.categoryName] =
+        (categoryMap[tx.categoryName] || 0) + tx.amount;
 
       if (!monthMap[month]) {
         monthMap[month] = { income: 0, expense: 0 };
